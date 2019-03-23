@@ -6,9 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const Mongoose = require('mongoose');
 
-require('dotenv').config();
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+require('dotenv').config();
 
 const server = Hapi.server({
   host: 'localhost',
@@ -102,22 +102,6 @@ const log = async function(){
 	});
 };
 
-const auth = async function(){
-	// load plugin
-	await server.register(require('bell'));
-
-	// load strategies
-	server.auth.strategy('github', 'bell', {
-		provider: 'github',
-		password: process.env.AUTH_COOKIE_PASSWORD,
-		clientId: process.env.AUTH_GITHUB_CLIENT_ID,
-		clientSecret: process.env.AUTH_GITHUB_CLIENT_SECRET,
-		isSecure: process.env.NODE_ENV === 'production',
-		scope: []
-	});
-
-};
-
 const i18n = async function(){
 	/*
 	 * Language plugin. 
@@ -146,16 +130,16 @@ const i18n = async function(){
 const start = async function(){
   try{
 		// language
-		await i18n();
+    await i18n();
 
 		// logging
-		await log();
+    await log();
 
 		// connect to database
-		db();
-
-		// auth
-		await auth();
+    db();
+		
+		// auth plugin
+		await server.register(require('bell'));
 
     // load my modules
     var moduleList = myReadDir(path.join(__dirname, 'modules'));
