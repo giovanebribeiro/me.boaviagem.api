@@ -1,34 +1,48 @@
 'use strict';
 
-var Mongoose = require('mongoose');
+const Mongoose = require('mongoose');
+const debug = require('debug')('me.boaviagem.api:model.user.js');
 
 var schema = new Mongoose.Schema({
+  createdAt: {
+    type: Date,
+    default: Date.now()
+  },
+  modifiedAt: {
+    type: Date
+  },
   name: {
     type: String,
     required: true
   },
   email:{
     type: String,
-    required: true
+    required: true,
+    index: true
   },
   scope:{
     type: String,
     enum: [ 
-      'root', // rule all blogs
-      'admin', // admin only your blogs
-      'postmaster', // manage posts
-      'critic', // can comment posts, and it's all
+      'root', // manage all blogs and users, but not content
+      'admin', // admin only your blogs, including users and content
+      'postmaster', // manage posts only
     ],
     default: 'admin'
   },
   auth:[{
     provider: { type: String, required: true },
     id: String,
+    email: String,
     raw: {
       type: Mongoose.Schema.Types.Mixed,
       required: true
     }
   }]
+});
+
+schema.pre('save', function(next){
+  this.modifiedAt = Date.now();
+  return next();
 });
 
 var User = Mongoose.model('user', schema);

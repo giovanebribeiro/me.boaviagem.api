@@ -128,7 +128,8 @@ const i18n = async function(){
 }
 
 const start = async function(){
-  try{
+
+  try {
 		// language
     await i18n();
 
@@ -153,7 +154,7 @@ const start = async function(){
 
     await server.start();
 
-  }catch(err){
+  } catch(err){
     debug(err);
     process.exit(1);
   }

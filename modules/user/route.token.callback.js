@@ -4,7 +4,7 @@ const boom = require('boom');
 
 module.exports = {
 	method: ['GET'],
-	path: '/token',
+	path: '/token/callback',
 	options: {
 		description: 'token provider callback',
 		handler: function githubToken(request, h){
