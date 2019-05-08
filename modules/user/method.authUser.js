@@ -40,6 +40,8 @@ module.exports = function(server){
         } 
       });
 
+      let code = 200;
+
       if(!user){
         debug('user not found. Create it');
 
@@ -53,10 +55,11 @@ module.exports = function(server){
         });
 
         await user.save();
+        code = 201;
 
       }
 
-      return user;
+      return [code, user];
 
     }
 

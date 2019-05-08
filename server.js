@@ -142,6 +142,9 @@ const start = async function(){
 		// auth plugin
 		await server.register(require('bell'));
 
+    // JWT plugin
+    await server.register(require('hapi-auth-jwt2'));
+
     // load my modules
     var moduleList = myReadDir(path.join(__dirname, 'modules'));
     await server.register(moduleList);
