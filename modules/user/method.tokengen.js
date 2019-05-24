@@ -38,12 +38,15 @@ module.exports = function(server){
       const token = await JWT.sign(payload, process.env.AUTH_JWT_PRIVATE_KEY, { algorithm: 'HS512' });
 
       debug('generated token = ', token);
-      return [loggedUser[0], {
-        token: token,
-        expiresIn: exp,
-        issuedAt: iat,
-        issuer: iss
-      }];
+      return [
+        loggedUser[0], // code
+        {
+          token: token,
+          expiresIn: exp,
+          issuedAt: iat,
+          issuer: iss
+        }
+      ];
 
 		}
 	);
