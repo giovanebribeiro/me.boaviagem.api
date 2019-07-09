@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/giovanebribeiro/me.boaviagem.api#readme",
   "dependencies": {
+    "bcryptjs": "2.4.3",
     "bell": "10.0.0",
     "blipp": "3.1.2",
     "boom": "7.3.0",
@@ -36,13 +37,15 @@
     "hapi-i18n": "2.0.0",
     "inert": "5.1.2",
     "joi": "14.3.1",
+    "jsonwebtoken": "8.5.1",
     "lout": "11.1.0",
     "mongoose": "5.4.19",
     "vision": "5.4.4"
   },
   "devDependencies": {
+    "@giovanebribeiro/taglog": "0.0.4",
+    "@hapi/basic": "^5.1.0",
     "code": "^5.2.4",
-    "jsonwebtoken": "^8.5.1",
     "lab": "^18.0.2",
     "nodemon": "^1.18.10"
   }

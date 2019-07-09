@@ -141,6 +141,8 @@ const start = async function(){
 		
 		// auth plugin
 		await server.register(require('bell'));
+    if(process.env.NODE_ENV!=='production')
+      await server.register(require('@hapi/basic'));
 
     // JWT plugin
     await server.register(require('hapi-auth-jwt2'));

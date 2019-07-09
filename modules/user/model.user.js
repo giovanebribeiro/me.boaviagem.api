@@ -15,6 +15,9 @@ var schema = new Mongoose.Schema({
     type: String,
     required: true
   },
+  username: {
+    type: String
+  },
   email:{
     type: String,
     required: true,

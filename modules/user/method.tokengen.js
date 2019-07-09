@@ -10,14 +10,6 @@ module.exports = function(server){
 
       let loggedUser = await server.plugins['user'].authUser(request, provider);
 
-      // GENERATE JWT TOKEN
-      // * o que falta: 
-      // ** - gerar JWT (OK)
-      // ** - when return the token, return with a code to identify if a user was created (201) or found(200)
-      // ** - gerar com refresh token
-      // ** - rota p/ refresh token
-      // ** - rota para linkar contas. linkar o objeto auth e depois remover a conta antiga.
-      // ** - adicionar testes
       let authBy = [];
       loggedUser[1].auth.forEach(function(item){
         authBy.push(item.provider);

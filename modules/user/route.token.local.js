@@ -1,17 +1,17 @@
 'use strict';
 
 const boom = require('boom');
-const errorTag = ['me.boaviagem.api', 'user', 'route.token.github.js'];
+const errorTag = ['me.boaviagem.api', 'user', 'route.token.local.js'];
 
 module.exports = {
-  method: ['GET'],
-  path: '/token/github',
+  method: ['POST'],
+  path: '/token/local',
   options: {
-    auth: 'github',
-    description: 'Get an user token using github (https://github.com) provider',
-    handler: async function githubToken(request, h){
+    auth: 'local',
+    description: 'Get an user token using local auth provider',
+    handler: async function localToken(request, h){
       try{
-        const result = await request.server.methods.tokengen(request, 'github');
+        const result = await request.server.methods.tokengen(request, 'local');
         let returnCode = result[0];
         let responseData = result[1];
         return h.response(responseData).code(returnCode);
