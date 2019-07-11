@@ -1,7 +1,7 @@
 'use strict';
 
 const boom = require('boom');
-const errorTag = ['me.boaviagem.api', 'user', 'route.token.local.js'];
+const errorTag = ['error', 'me.boaviagem.api', 'user', 'route.token.local.js'];
 
 module.exports = {
   method: ['POST'],

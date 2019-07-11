@@ -1,8 +1,13 @@
+'use strict';
+
+const debugTag = ['debug', 'me.boaviagem.api', 'user', 'route.token.local.js'];
+
 exports.plugin = {
 	name: 'user',
 	description: 'The user and auth module',
 	register: function(server, options){
-		// load auth strategies
+		
+    // load auth strategies
 		require('./auth.strategy.github.js')(server);
 		require('./auth.strategy.google.js')(server);
     if(process.env.NODE_ENV !== 'production'){
@@ -17,7 +22,7 @@ exports.plugin = {
 		server.route(require('./route.token.github.js'));
 		server.route(require('./route.token.google.js'));
     if(process.env.NODE_ENV !== 'production'){
-      require('./route.token.local.js');
+      server.route(require('./route.token.local.js'));
     }
 
 	}

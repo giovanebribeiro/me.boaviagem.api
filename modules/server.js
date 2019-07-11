@@ -6,10 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const Mongoose = require('mongoose');
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
-require('dotenv').config();
-
 const server = Hapi.server({
   host: 'localhost',
   port: 8051
@@ -127,9 +123,8 @@ const i18n = async function(){
 	});
 }
 
-const start = async function(){
+exports.init = async function(){
 
-  try {
 		// language
     await i18n();
 
@@ -157,15 +152,18 @@ const start = async function(){
     // documentation
     await server.register([ require('vision'), require('inert'), require('lout') ]);
 
-    await server.start();
+    await server.initialize(); // finishes plugin registration
 
-  } catch(err){
-    debug(err);
-    process.exit(1);
-  }
-
-  debug('Server running ('+ process.env.NODE_ENV +') at: ', server.info.uri);
+    return server;
 
 };
 
-start();
+exports.start = async () => {
+  await server.start();
+  debug('Server running ('+ process.env.NODE_ENV +') at: ', server.info.uri);
+}
+
+process.on('unhandledRejection', (err) => {
+  debug(err);
+  process.exit(1);
+});
