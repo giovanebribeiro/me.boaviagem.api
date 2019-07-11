@@ -66,3 +66,5 @@ typings/
 
 # MACOS files
 .DS_Store
+
+vim-markdown-preview.html

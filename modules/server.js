@@ -104,12 +104,12 @@ const i18n = async function(){
 	 *
 	 * Default locale: pt-BR.
 	 *
-	 * If you want another locale, put the header:
+	 * If you want another locale, put inside the header:
 	 *
 	 * headers:{
 	 *    Content-Type: 'application/json',
 	 *    ...
-	 *    lang: 'en'
+	 *    lang: 'en' (another options, see: 
 	 * }
 	 * 
 	 */
@@ -123,7 +123,7 @@ const i18n = async function(){
 	});
 }
 
-exports.init = async function(){
+exports.init = async () =>{
 
 		// language
     await i18n();
@@ -143,7 +143,7 @@ exports.init = async function(){
     await server.register(require('hapi-auth-jwt2'));
 
     // load my modules
-    var moduleList = myReadDir(path.join(__dirname, 'modules'));
+    var moduleList = myReadDir(__dirname/*path.join(__dirname, 'modules')*/);
     await server.register(moduleList);
 
     // blipp plugin
