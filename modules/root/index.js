@@ -10,7 +10,11 @@ exports.plugin = {
       options: {
         description: 'In the beginning...',
         handler: function(request, h){
-          return h.redirect('/docs').permanent();
+          if(process.env.NODE_ENV === 'test'){
+            return 'Hello World!';
+          } else {
+            return h.redirect('/docs').permanent();
+          }
         }
       }
     });

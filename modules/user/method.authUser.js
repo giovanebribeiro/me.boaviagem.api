@@ -16,6 +16,7 @@ module.exports = function(server){
       }
       
       const credentials = request.auth.credentials;
+      debug('credentials = ' + JSON.stringify(credentials, null, '\t'));
 
       let providerUserId = null;
       let userNew = new User();

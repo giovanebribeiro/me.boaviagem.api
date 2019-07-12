@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const Mongoose = require('mongoose');
 
+require('dotenv').config();
+
 const server = Hapi.server({
   host: 'localhost',
   port: 8051
@@ -43,11 +45,11 @@ const db = function(){
 	var name = 'me_boaviagem_api_' + process.env.NODE_ENV;
 
 	if (user !== '' && pass === '') {
-	  return next(new Error("If DB user (" + user + ") is not empty, DB password can't be empty."));
+	  throw new Error("If DB user (" + user + ") is not empty, DB password can't be empty.");
 	}
 
 	if (user === '' && pass !== '') {
-	  return next(new Error("If DB password (" + pass + ") is not empty, DB user can't be empty."));
+	  throw new Error("If DB password (" + pass + ") is not empty, DB user can't be empty.");
 	}
 
 	var mongoUrl = 'mongodb://';
@@ -55,11 +57,11 @@ const db = function(){
 
 	mongoUrl += host + ':' + port + '/' + name;
 
-	var conn = Mongoose.createConnection(mongoUrl);
+	//var conn = Mongoose.createConnection(mongoUrl);
 	Mongoose.connect(mongoUrl);
 
 	Mongoose.connection.on('connected', function() {
-		server.log("info", "Database connected successfully.");
+	  server.log("info", "Database connected successfully.");
 	});
 
 	Mongoose.connection.on('error', function() {
@@ -121,7 +123,7 @@ const i18n = async function(){
 			languageHeaderField: 'lang'
 		}
 	});
-}
+};
 
 exports.init = async () =>{
 
@@ -129,7 +131,8 @@ exports.init = async () =>{
     await i18n();
 
 		// logging
-    await log();
+    if(process.env.NODE_ENV !== 'test')
+      await log();
 
 		// connect to database
     db();
@@ -150,7 +153,7 @@ exports.init = async () =>{
     if(process.env.NODE_ENV === 'development') await server.register({ plugin: require('blipp') });
 
     // documentation
-    await server.register([ require('vision'), require('inert'), require('lout') ]);
+    await server.register([ require('vision'), require('@hapi/inert'), require('lout') ]);
 
     await server.initialize(); // finishes plugin registration
 
@@ -161,7 +164,7 @@ exports.init = async () =>{
 exports.start = async () => {
   await server.start();
   debug('Server running ('+ process.env.NODE_ENV +') at: ', server.info.uri);
-}
+};
 
 process.on('unhandledRejection', (err) => {
   debug(err);
