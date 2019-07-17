@@ -4,9 +4,16 @@ const Hapi = require('hapi');
 const debug = require('debug')('me.boaviagem.api:server.js');
 const fs = require('fs');
 const path = require('path');
-const Mongoose = require('mongoose');
+
+const db = require('./db.js');
+const myReadDir = require('./myReadDir.js');
 
 require('dotenv').config();
+
+// track of server state
+let internals = {
+  initialized: false
+};
 
 const server = Hapi.server({
   host: 'localhost',
@@ -14,68 +21,14 @@ const server = Hapi.server({
 });
 
 // source: https://gist.github.com/kethinov/6658166
-const myReadDir = function(dir, fileList){
 
-  var files = fs.readdirSync(dir);
-  fileList = fileList || [];
-  files.forEach(function(file){
-    var temp = path.join(dir, file);
-    if(fs.statSync(temp).isDirectory()){
-      temp = path.join(dir, file, '/');
-      return myReadDir(temp, fileList);
-    }
-
-    if(path.basename(file) === 'index.js'){
-      var obj = require(path.join(dir, file));
-      fileList.push(obj);
-    }
-
-  });
-
-  return fileList;
-
-};
-
-const db = function(){
-
-	var host = process.env.DB_HOST || 'localhost';
-	var port = process.env.DB_PORT || 27017;
-	var user = process.env.DB_USER || '';
-	var pass = process.env.DB_PASS || '';
-	var name = 'me_boaviagem_api_' + process.env.NODE_ENV;
-
-	if (user !== '' && pass === '') {
-	  throw new Error("If DB user (" + user + ") is not empty, DB password can't be empty.");
-	}
-
-	if (user === '' && pass !== '') {
-	  throw new Error("If DB password (" + pass + ") is not empty, DB user can't be empty.");
-	}
-
-	var mongoUrl = 'mongodb://';
-	if(user !== '') mongoUrl += user + ':' + pass + '@';
-
-	mongoUrl += host + ':' + port + '/' + name;
-
-	//var conn = Mongoose.createConnection(mongoUrl);
-	Mongoose.connect(mongoUrl);
-
-	Mongoose.connection.on('connected', function() {
-	  server.log("info", "Database connected successfully.");
-	});
-
-	Mongoose.connection.on('error', function() {
-	  server.log("error", "Error connection with database");
-	});
-
-	Mongoose.connection.on('disconnected', function() {
-	  server.log("info", "Database disconnected successfully.");
-	});
-
-};
-
-const log = async function(){
-	const options = {
+exports.init = async () =>{
+  db(server);
+  
+  /*
+   * LOG
+   */
+  const options = {
 		ops: {
 		  interval: 1000
 		},
@@ -96,74 +49,69 @@ const log = async function(){
 
 	await server.register({
 	  plugin: require('good'),
-	  options,
+	  options
 	});
-};
 
-const i18n = async function(){
-	/*
-	 * Language plugin. 
-	 *
-	 * Default locale: pt-BR.
-	 *
-	 * If you want another locale, put inside the header:
-	 *
-	 * headers:{
-	 *    Content-Type: 'application/json',
-	 *    ...
-	 *    lang: 'en' (another options, see: 
-	 * }
-	 * 
-	 */
-	await server.register({
-		plugin: require('hapi-i18n'),
-		options: {
-			locales: [ 'pt-BR' ],
-			directory: __dirname + '/locales',
-			languageHeaderField: 'lang'
-		}
-	});
-};
+  if(process.env.NODE_ENV !== 'test'){
+    /*
+     * Language plugin. 
+     *
+     * Default locale: pt-BR.
+     *
+     * If you want another locale, put inside the header:
+     *
+     * headers:{
+     *    Content-Type: 'application/json',
+     *    ...
+     *    lang: 'en' (another options, see: 
+     * }
+     * 
+     */
+    await server.register({
+      plugin: require('hapi-i18n'),
+      options: {
+        locales: [ 'pt-BR' ],
+        directory: __dirname + '/locales',
+        languageHeaderField: 'lang'
+      }
+    });
+  }
+	
+  await server.register(require('bell'));
+  if(process.env.NODE_ENV!=='production')
+    await server.register(require('@hapi/basic'));
 
-exports.init = async () =>{
+  // JWT plugin
+  await server.register(require('hapi-auth-jwt2'));
 
-		// language
-    await i18n();
+  // load my modules
+  var moduleList = myReadDir(__dirname/*path.join(__dirname, 'modules')*/);
+  await server.register(moduleList);
 
-		// logging
-    if(process.env.NODE_ENV !== 'test')
-      await log();
+  // blipp plugin
+  if(process.env.NODE_ENV === 'development') await server.register({ plugin: require('blipp') });
 
-		// connect to database
-    db();
-		
-		// auth plugin
-		await server.register(require('bell'));
-    if(process.env.NODE_ENV!=='production')
-      await server.register(require('@hapi/basic'));
+  // documentation
+  await server.register([ require('vision'), require('@hapi/inert'), require('lout') ]);
 
-    // JWT plugin
-    await server.register(require('hapi-auth-jwt2'));
+  await server.initialize(); // finishes plugin registration
 
-    // load my modules
-    var moduleList = myReadDir(__dirname/*path.join(__dirname, 'modules')*/);
-    await server.register(moduleList);
+  internals.initialize = true;
+  server.events.emit('app-initialized');
 
-    // blipp plugin
-    if(process.env.NODE_ENV === 'development') await server.register({ plugin: require('blipp') });
-
-    // documentation
-    await server.register([ require('vision'), require('@hapi/inert'), require('lout') ]);
-
-    await server.initialize(); // finishes plugin registration
-
-    return server;
+  return server;
 
 };
 
 exports.start = async () => {
   await server.start();
   debug('Server running ('+ process.env.NODE_ENV +') at: ', server.info.uri);
+};
+
+exports.closeDb = async () => {
+  await Mongoose.connection.close();
+  server.log('Database Disconnected successfully.');
+  debug('Database disconnected.');
 };
 
 process.on('unhandledRejection', (err) => {

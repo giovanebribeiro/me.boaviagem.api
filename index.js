@@ -1,6 +1,6 @@
 `use strict`;
 
-const { init, start } = require('./modules/server.js');
+const { db, init, start } = require('./modules/server.js');
 
 (async () =>{
   await init();

@@ -2,27 +2,32 @@
 
 const Lab = require('@hapi/lab');
 const { expect } = require('@hapi/code');
-const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script();
-const { init } = require('../modules/server.js');
+const { after, before, describe, it } = exports.lab = Lab.script();
+const { init, db, closeDb } = require('../modules/server.js');
 /*
  
  */
 describe('authUser method', () => {
-  let server;
+  let serverAuthUser;
   let request;
 
-  beforeEach(async () => {
-    server = await init();
+  before(async () => {
+    if(!serverAuthUser){
+      await db();
+      serverAuthUser = await init();
+    }
+    
   });
 
-  afterEach(async () => {
-    await server.stop();
+  after(async () => {
+    await serverAuthUser.stop();
+    await closeDb();
   });
 
-  it('github auth', () => {
+  it('github auth', async () => {
     request = {
       auth: {
-        credentials = {
+        credentials: {
           "provider": "github",
           "query": {},
           "token": "jcjbasdcbasdbcjasbdc9q874r8q34ryqhweuq47yr",
@@ -40,13 +45,10 @@ describe('authUser method', () => {
           }
         }
       }
-    }
+    };
 
-    const res = server.inject({
-      method: 'get',
-      url: '/'
-    });
+    let loggedUser = await serverAuthUser.plugins['user'].authUser(request, 'github');
+    expect(loggedUser).exists();
 
-    expect(res.statusCode, 200);
   });
 });

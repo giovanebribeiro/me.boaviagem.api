@@ -2,13 +2,13 @@
 
 const Lab = require('@hapi/lab');
 const { expect } = require('@hapi/code');
-const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script();
+const { afterEach, before, experiment, test } = exports.lab = Lab.script();
 const { init } = require('../modules/server.js');
 
-describe('GET /', () => {
+experiment('GET /', () => {
   let server;
 
-  beforeEach(async () => {
+  before(async () => {
     server = await init();
   });
 
@@ -16,12 +16,13 @@ describe('GET /', () => {
     await server.stop();
   });
 
-  it('Hello World!', () => {
-    const res = server.inject({
+  test('Hello World!', async () => {
+    const res = await server.inject({
       method: 'get',
       url: '/'
     });
 
     expect(res.statusCode, 200);
+    expect(res.result, 'Hello World!');
   });
 });
