@@ -1,8 +1,9 @@
 'use strict';
 
 const Mongoose = require('mongoose');
+const debug = require('debug')('me.boaviagem.api:modules/db.js');
 
-module.exports = function(server){
+exports.db = (server) => {
 
   var host = process.env.DB_HOST || 'localhost';
 	var port = process.env.DB_PORT || 27017;
@@ -39,4 +40,9 @@ module.exports = function(server){
 	});
 
 };
-  
+
+exports.closeDb = async (server) => {
+  await Mongoose.connection.close();
+  server.log('Database Disconnected successfully.');
+  debug('Database disconnected.');
+};

@@ -1,19 +1,14 @@
 'use strict';
 
 const Hapi = require('hapi');
-const debug = require('debug')('me.boaviagem.api:server.js');
-const fs = require('fs');
-const path = require('path');
+const debug = require('debug')('me.boaviagem.api:modules/server.js');
 
-const db = require('./db.js');
+const { db, closeDb } = require('./db.js');
+const log = require('./log.js');
 const myReadDir = require('./myReadDir.js');
+const i18n = require('./i18n.js');
 
 require('dotenv').config();
-
-// track of server state
-let internals = {
-  initialized: false
-};
 
 const server = Hapi.server({
   host: 'localhost',
@@ -24,58 +19,11 @@ const server = Hapi.server({
 
 exports.init = async () =>{
   db(server);
+
+  await i18n(server);
   
-  /*
-   * LOG
-   */
-  const options = {
-		ops: {
-		  interval: 1000
-		},
-		reporters: {
-			myConsoleReporter: [
-				{
-		      module: 'good-squeeze',
-		      name: 'Squeeze',
-		      args: [{ log: '*', response: '*', request: '*'  }]
-				},
-				{
-				  module: 'good-console'
-				},
-				'stdout'
-			]
-		}
-	};
-
-	await server.register({
-	  plugin: require('good'),
-	  options
-	});
-
-  if(process.env.NODE_ENV !== 'test'){
-    /*
-     * Language plugin. 
-     *
-     * Default locale: pt-BR.
-     *
-     * If you want another locale, put inside the header:
-     *
-     * headers:{
-     *    Content-Type: 'application/json',
-     *    ...
-     *    lang: 'en' (another options, see: 
-     * }
-     * 
-     */
-    await server.register({
-      plugin: require('hapi-i18n'),
-      options: {
-        locales: [ 'pt-BR' ],
-        directory: __dirname + '/locales',
-        languageHeaderField: 'lang'
-      }
-    });
-  }
+  if(process.env.NODE_ENV !== 'test')
+    await log(server);
 	
   await server.register(require('bell'));
   if(process.env.NODE_ENV!=='production')
@@ -94,10 +42,11 @@ exports.init = async () =>{
   // documentation
   await server.register([ require('vision'), require('@hapi/inert'), require('lout') ]);
 
-  await server.initialize(); // finishes plugin registration
+  server.events.on('stop', async () => {
+    await closeDb(server);
+  });
 
-  internals.initialize = true;
-  server.events.emit('app-initialized');
+  await server.initialize(); // finishes plugin registration
 
   return server;
 
@@ -106,12 +55,6 @@ exports.init = async () =>{
 exports.start = async () => {
   await server.start();
   debug('Server running ('+ process.env.NODE_ENV +') at: ', server.info.uri);
-};
-
-exports.closeDb = async () => {
-  await Mongoose.connection.close();
-  server.log('Database Disconnected successfully.');
-  debug('Database disconnected.');
 };
 
 process.on('unhandledRejection', (err) => {
