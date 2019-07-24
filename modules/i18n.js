@@ -23,5 +23,5 @@ module.exports = async(server) => {
         directory: __dirname + '/locales',
         languageHeaderField: 'lang'
       }
-    });
+    }, { once: true });
 };

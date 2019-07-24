@@ -7,12 +7,12 @@ module.exports = function(server){
   return (
     async function authUser(request, provider){
       if(!provider){
-        provider = 'none';
+        return new Error(request.i18n.__('user.auth.unknown-provider'));
       }
 
       if(!request.auth.isAuthenticated){
         server.log('Authentication failed due to message: ${request.auth.error.message}');
-        return callback(new Error(request.i18n.__('user.auth.failed')));
+        return new Error(request.i18n.__('user.auth.failed'));
       }
       
       const credentials = request.auth.credentials;

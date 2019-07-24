@@ -1,3 +1,4 @@
 {
-  "user.auth.failed": "Autenticação falhou. Tente novamente."
+  "user.auth.failed": "Autenticação falhou. Tente novamente.",
+  "user.auth.unknown-provider": "Provedor de login desconhecido. Favor tentar novamente com um provider diferente."
 }

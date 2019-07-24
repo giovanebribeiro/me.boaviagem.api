@@ -7,6 +7,7 @@ const { db, closeDb } = require('./db.js');
 const log = require('./log.js');
 const myReadDir = require('./myReadDir.js');
 const i18n = require('./i18n.js');
+const { swagger } = require('./swagger.js');
 
 require('dotenv').config();
 
@@ -25,22 +26,22 @@ exports.init = async () =>{
   if(process.env.NODE_ENV !== 'test')
     await log(server);
 	
-  await server.register(require('bell'));
-  if(process.env.NODE_ENV!=='production')
-    await server.register(require('@hapi/basic'));
-
-  // JWT plugin
-  await server.register(require('hapi-auth-jwt2'));
+  await server.register([
+    require('bell'), // logins with many providers
+    require('hapi-auth-jwt2') // json web token
+  ], { once: true });
 
   // load my modules
   var moduleList = myReadDir(__dirname/*path.join(__dirname, 'modules')*/);
-  await server.register(moduleList);
+  await server.register(moduleList, {once: true});
 
   // blipp plugin
-  if(process.env.NODE_ENV === 'development') await server.register({ plugin: require('blipp') });
+  if(process.env.NODE_ENV === 'development') 
+    await server.register({ plugin: require('blipp') });
 
   // documentation
-  await server.register([ require('vision'), require('@hapi/inert'), require('lout') ]);
+  if(process.env.NODE_ENV !== 'test')
+    await swagger(server);
 
   server.events.on('stop', async () => {
     await closeDb(server);

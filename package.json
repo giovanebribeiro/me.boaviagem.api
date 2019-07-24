@@ -26,6 +26,7 @@
   "dependencies": {
     "@hapi/hoek": "8.0.2",
     "@hapi/inert": "5.2.1",
+    "@hapi/vision": "5.5.2",
     "bcryptjs": "2.4.3",
     "bell": "10.0.0",
     "blipp": "4.0.0",
@@ -38,15 +39,13 @@
     "hapi": "18.1.0",
     "hapi-auth-jwt2": "8.6.1",
     "hapi-i18n": "2.1.1",
+    "hapi-swagger": "10.0.2",
     "joi": "14.3.1",
     "jsonwebtoken": "8.5.1",
-    "lout": "11.2.3",
-    "mongoose": "5.6.4",
-    "vision": "5.4.4"
+    "mongoose": "5.6.4"
   },
   "devDependencies": {
     "@giovanebribeiro/taglog": "0.0.4",
-    "@hapi/basic": "^5.1.0",
     "@hapi/code": "^5.3.1",
     "@hapi/lab": "^19.1.0",
     "code": "^5.2.4",

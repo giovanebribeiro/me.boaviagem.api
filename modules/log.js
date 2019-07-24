@@ -26,6 +26,6 @@ module.exports = async (server) => {
 	await server.register({
 	  plugin: require('good'),
 	  options
-	});
+	}, { once: true });
 
 };
