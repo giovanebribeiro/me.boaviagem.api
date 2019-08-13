@@ -1,3 +1,4 @@
 {
-	"user.auth.failed": "user.auth.failed"
+	"user.auth.failed": "user.auth.failed",
+	"client.auth.missing.header": "client.auth.missing.header"
 }

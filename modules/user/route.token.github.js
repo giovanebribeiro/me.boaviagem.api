@@ -7,7 +7,7 @@ module.exports = {
   method: ['GET'],
   path: '/token/github',
   options: {
-    auth: (process.env.NODE_ENV !== 'test')? 'github': false,
+    auth: 'github',
     description: 'Get an user token using github (https://github.com) provider',
     handler: async function githubToken(request, h){
       try{

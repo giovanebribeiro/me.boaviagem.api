@@ -1,4 +1,6 @@
 {
   "user.auth.failed": "Autenticação falhou. Tente novamente.",
-  "user.auth.unknown-provider": "Provedor de login desconhecido. Favor tentar novamente com um provider diferente."
+  "user.auth.unknown-provider": "Provedor de login desconhecido. Favor tentar novamente com um provider diferente.",
+  "request.missing.header": "Cabeçalho faltando: ",
+  "user.auth.client-not-found": "Client não encontrado: "
 }

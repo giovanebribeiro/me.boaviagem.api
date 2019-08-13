@@ -36,8 +36,7 @@ exports.init = async () =>{
   await server.register(moduleList, {once: true});
 
   // blipp plugin
-  if(process.env.NODE_ENV === 'development') 
-    await server.register({ plugin: require('blipp') });
+  await server.register({ plugin: require('blipp') }, { once: true });
 
   // documentation
   if(process.env.NODE_ENV !== 'test')

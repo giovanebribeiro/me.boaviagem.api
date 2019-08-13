@@ -25,7 +25,7 @@ exports.db = (server) => {
 	mongoUrl += host + ':' + port + '/' + name;
 
 	//var conn = Mongoose.createConnection(mongoUrl);
-	Mongoose.connect(mongoUrl);
+	Mongoose.connect(mongoUrl, { useNewUrlParser: true });
 
 	Mongoose.connection.on('connected', function() {
 	  server.log("info", "Database connected successfully.");

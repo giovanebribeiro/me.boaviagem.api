@@ -20,8 +20,9 @@ module.exports = async(server) => {
       plugin: require('hapi-i18n'),
       options: {
         locales: [ 'pt-BR' ],
-        directory: __dirname + '/locales',
-        languageHeaderField: 'lang'
+        directory: process.cwd() + '/locales',
+        languageHeaderField: 'lang',
+        defaultLocale: 'pt-BR'
       }
     }, { once: true });
 };
