@@ -9,6 +9,9 @@ exports.plugin = {
   description: 'The root module',
   register: function(server, options){
 
+    // GET /index.php
+    server.route(require('./route.index.php.js'));
+
     server.route({
       method: 'GET',
       path: '/',
