@@ -4,7 +4,7 @@
   "description": "An WebAPI for my website",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint **/*.js",
+    "pretest": "eslint '**/*.js'",
     "test": "NODE_ENV=test lab -v --coverage --leaks --assert code",
     "start": "DEBUG=me.boaviagem.api:* nodemon ./index.js"
   },
