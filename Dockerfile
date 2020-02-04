@@ -9,8 +9,6 @@ USER nodejs
 
 WORKDIR /home/nodejs
 
-RUN ls -la .
-
 COPY package.json .
 
 RUN npm install --production

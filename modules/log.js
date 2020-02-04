@@ -1,10 +1,7 @@
 'use strict';
 
 module.exports = async (server) => {
-  /*
-   * LOG
-   */
-  const options = {
+  /*const options = {
 		ops: {
 		  interval: 1000
 		},
@@ -27,5 +24,5 @@ module.exports = async (server) => {
 	  plugin: require('good'),
 	  options
 	}, { once: true });
-
+    */
 };

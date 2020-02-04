@@ -27,7 +27,7 @@ exports.init = async () =>{
     await log(server);
 	
   await server.register([
-    require('bell'), // logins with many providers
+    require('@hapi/bell'), // logins with many providers
     require('hapi-auth-jwt2') // json web token
   ], { once: true });
 

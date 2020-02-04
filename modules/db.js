@@ -5,11 +5,13 @@ const debug = require('debug')('me.boaviagem.api:modules/db.js');
 
 exports.db = (server) => {
 
+    var protocol = process.env.DB_PROTOCOL || 'mongodb'
     var host = process.env.DB_HOST || 'localhost';
-	var port = process.env.DB_PORT || 27017;
+	var port = process.env.DB_PORT || '';
 	var user = process.env.DB_USER || '';
 	var pass = process.env.DB_PASS || '';
-	var name = 'me_boaviagem_api_' + process.env.NODE_ENV;
+	var name = process.env.DB_NAME || 'me_boaviagem_api_' + process.env.NODE_ENV;
+    var opts = process.env.DB_OPTS || '';
 
 	if (user !== '' && pass === '') {
 	  throw new Error("If DB user (" + user + ") is not empty, DB password can't be empty.");
@@ -19,14 +21,23 @@ exports.db = (server) => {
 	  throw new Error("If DB password (" + pass + ") is not empty, DB user can't be empty.");
 	}
 
-	var mongoUrl = 'mongodb://';
-	if(user !== '') mongoUrl += user + ':' + pass + '@';
+	var mongoUrl = protocol + '://';
+    if(user !== ''){
+        mongoUrl += user + ':' + pass + '@';
+    }
 
-	mongoUrl += host + ':' + port + '/' + name;
+	mongoUrl += host;
+    if(port !== ''){
+        mongoUrl += ':' + port
+    }
 
-	//var conn = Mongoose.createConnection(mongoUrl);
-	Mongoose.connect(mongoUrl, { useNewUrlParser: true });
+	mongoUrl += '/' + name;
 
+    if(opts !== ''){
+        mongoUrl += '?' + opts;
+    }
+
+	Mongoose.connect(mongoUrl, { useNewUrlParser: true }); 
 	Mongoose.connection.on('connected', function() {
 	  server.log("info", "Database connected successfully.");
 	});
