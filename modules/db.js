@@ -5,7 +5,7 @@ const debug = require('debug')('me.boaviagem.api:modules/db.js');
 
 exports.db = (server) => {
 
-  var host = process.env.DB_HOST || 'localhost';
+    var host = process.env.DB_HOST || 'localhost';
 	var port = process.env.DB_PORT || 27017;
 	var user = process.env.DB_USER || '';
 	var pass = process.env.DB_PASS || '';

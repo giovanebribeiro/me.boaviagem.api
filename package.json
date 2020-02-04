@@ -6,7 +6,9 @@
   "scripts": {
     "pretest": "eslint **/*.js",
     "test": "NODE_ENV=test lab -v --coverage --leaks --assert code",
-    "start": "DEBUG=me.boaviagem.api:* nodemon ./index.js"
+    "start": "DEBUG=me.boaviagem.api:* nodemon ./index.js",
+    "predockerize": "make login",
+    "dockerize": "make build push"
   },
   "repository": {
     "type": "git",
@@ -24,23 +26,20 @@
   },
   "homepage": "https://github.com/giovanebribeiro/me.boaviagem.api#readme",
   "dependencies": {
+    "@hapi/bell": "^12.0.0",
+    "@hapi/boom": "^9.0.0",
     "@hapi/hapi": "^19.0.5",
     "@hapi/hoek": "^9.0.2",
     "@hapi/inert": "^6.0.1",
+    "@hapi/joi": "^17.1.0",
     "@hapi/vision": "^6.0.0",
-    "bcryptjs": "^2.4.3",
-    "bell": "^10.0.0",
+    "bcrypt": "^3.0.7",
     "blipp": "4.0.1",
-    "boom": "^7.3.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
-    "good": "^8.1.2",
-    "good-console": "^8.0.0",
-    "good-squeeze": "^5.1.0",
     "hapi-auth-jwt2": "^8.8.1",
     "hapi-i18n": "^3.0.0",
     "hapi-swagger": "^12.1.0",
-    "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.10"
   },
@@ -48,10 +47,8 @@
     "@giovanebribeiro/taglog": "^0.1.2",
     "@hapi/code": "^8.0.1",
     "@hapi/lab": "^22.0.3",
-    "code": "^5.2.4",
     "eslint": "^6.0.1",
     "eslint-plugin-mocha": "^6.0.0",
-    "lab": "^18.0.2",
     "nodemon": "^2.0.2"
   }
 }

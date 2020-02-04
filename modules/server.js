@@ -1,6 +1,6 @@
 'use strict';
 
-const Hapi = require('hapi');
+const Hapi = require('@hapi/hapi');
 const debug = require('debug')('me.boaviagem.api:modules/server.js');
 
 const { db, closeDb } = require('./db.js');
