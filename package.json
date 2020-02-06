@@ -39,6 +39,7 @@
     "dotenv": "^8.2.0",
     "hapi-auth-jwt2": "^8.8.1",
     "hapi-i18n": "^3.0.0",
+    "hapi-pino": "^6.3.0",
     "hapi-swagger": "^12.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.10"

@@ -1,28 +1,21 @@
 'use strict';
 
 module.exports = async (server) => {
-  /*const options = {
-		ops: {
-		  interval: 1000
-		},
-		reporters: {
-			myConsoleReporter: [
-				{
-		      module: 'good-squeeze',
-		      name: 'Squeeze',
-		      args: [{ log: '*', response: '*', request: '*'  }]
-				},
-				{
-				  module: 'good-console'
-				},
-				'stdout'
-			]
-		}
-	};
 
-	await server.register({
-	  plugin: require('good'),
-	  options
-	}, { once: true });
-    */
+    const options = {
+        prettyPrint: process.env.NODE_ENV !== 'production',
+        // obfuscate sensible information
+        // see https://getpino.io/#/docs/redaction
+        redact: [
+            'req.headers.authorization'
+        ]
+    };
+
+    // TODO falta configurar as demais opções, como stream, etc.
+
+    await server.register({
+        plugin: require('hapi-pino'),
+        options: options
+    });
+  
 };
