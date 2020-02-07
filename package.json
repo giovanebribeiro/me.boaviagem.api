@@ -42,7 +42,8 @@
     "hapi-pino": "^6.3.0",
     "hapi-swagger": "^12.1.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.8.10"
+    "mongoose": "^5.8.10",
+    "pino-sentry": "^0.2.4"
   },
   "devDependencies": {
     "@giovanebribeiro/taglog": "^0.1.2",

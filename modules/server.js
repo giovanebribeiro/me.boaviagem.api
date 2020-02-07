@@ -12,7 +12,7 @@ const { swagger } = require('./swagger.js');
 require('dotenv').config();
 
 const server = Hapi.server({
-  host: 'localhost',
+  host: '0.0.0.0',
   port: 8051
 });
 
@@ -27,8 +27,7 @@ exports.init = async () =>{
     await log(server);
 	
   await server.register([
-    require('@hapi/bell'), // logins with many providers
-    require('hapi-auth-jwt2') // json web token
+    require('@hapi/bell'), // logins with many providers require('hapi-auth-jwt2') // json web token
   ], { once: true });
 
   // load my modules
